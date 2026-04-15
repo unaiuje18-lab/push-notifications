@@ -7,18 +7,11 @@ const CACHE_NAME = `push-notifications-v${SW_VERSION}`;
 importScripts('https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js');
 importScripts('https://www.gstatic.com/firebasejs/10.7.1/firebase-messaging-compat.js');
 
-// Configuración de Firebase (debe coincidir con app.js)
-const firebaseConfig = {
-    apiKey: "TU_API_KEY",
-    authDomain: "tu-proyecto.firebaseapp.com",
-    projectId: "tu-proyecto-id",
-    storageBucket: "tu-proyecto.appspot.com",
-    messagingSenderId: "123456789",
-    appId: "1:123456789:web:abcdef123456"
-};
+// Importar configuración de Firebase
+importScripts('firebase-config-sw.js');
 
 // Inicializar Firebase
-firebase.initializeApp(firebaseConfig);
+firebase.initializeApp(firebaseConfigSW);
 const messaging = firebase.messaging();
 
 /**

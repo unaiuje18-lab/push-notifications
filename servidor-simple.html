@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Servidor de Prueba - Notificaciones Push</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+    <h1>🚨 No se puede iniciar el servidor</h1>
+    
+    <h2>Opciones disponibles:</h2>
+    
+    <h3>Opción 1: Usar servicios online (RECOMENDADO)</h3>
+    <p>Puedes desplegar tu aplicación en servicios gratuitos que soportan Node.js:</p>
+    <ul>
+        <li><strong>Vercel</strong>: <a href="https://vercel.com" target="_blank">vercel.com</a></li>
+        <li><strong>Netlify</strong>: <a href="https://netlify.com" target="_blank">netlify.com</a></li>
+        <li><strong>Railway</strong>: <a href="https://railway.app" target="_blank">railway.app</a></li>
+        <li><strong>Render</strong>: <a href="https://render.com" target="_blank">render.com</a></li>
+    </ul>
+    
+    <h3>Opción 2: Instalar Node.js (rápido)</h3>
+    <p>Descarga e instala Node.js desde:</p>
+    <a href="https://nodejs.org/" target="_blank" style="font-size: 20px; padding: 10px 20px; background: #68D391; color: white; text-decoration: none; border-radius: 5px; display: inline-block; margin: 10px 0;">
+        ⬇️ Descargar Node.js
+    </a>
+    <p>Después de instalarlo, ejecuta en la terminal:</p>
+    <pre style="background: #2D3748; color: #68D391; padding: 15px; border-radius: 5px;">
+npm install
+node server/index.js
+    </pre>
+    
+    <h3>Opción 3: Probar el frontend sin servidor</h3>
+    <p>Puedes abrir el archivo directamente, pero las notificaciones NO funcionarán sin un servidor backend.</p>
+    <a href="public/index.html" style="font-size: 16px; padding: 10px 20px; background: #4299E1; color: white; text-decoration: none; border-radius: 5px; display: inline-block; margin: 10px 0;">
+        Ver Frontend (solo visual)
+    </a>
+    
+    <hr>
+    
+    <h2>✅ ¿Qué está configurado?</h2>
+    <ul style="color: green;">
+        <li>✅ Credenciales de Firebase configuradas</li>
+        <li>✅ VAPID Key configurada</li>
+        <li>✅ Admin SDK configurado</li>
+        <li>✅ Todos los archivos listos</li>
+    </ul>
+    
+    <h2>❌ ¿Qué falta?</h2>
+    <ul style="color: red;">
+        <li>❌ Node.js no está instalado</li>
+        <li>❌ Python no está instalado correctamente</li>
+        <li>❌ No hay runtime de JavaScript/Python disponible</li>
+    </ul>
+    
+    <hr>
+    
+    <p><strong>Recomendación:</strong> Instala Node.js (toma 2 minutos) o despliega en Vercel/Netlify (gratis y sin instalar nada).</p>
+</body>
+</html>

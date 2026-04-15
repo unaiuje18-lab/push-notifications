@@ -1,16 +1,5 @@
-// Configuración de Firebase
-const firebaseConfig = {
-    apiKey: "TU_API_KEY",
-    authDomain: "tu-proyecto.firebaseapp.com",
-    projectId: "tu-proyecto-id",
-    storageBucket: "tu-proyecto.appspot.com",
-    messagingSenderId: "123456789",
-    appId: "1:123456789:web:abcdef123456",
-    measurementId: "G-XXXXXXXXXX"
-};
-
-// URL del servidor backend
-const API_URL = 'http://localhost:3000/api';
+// Importar configuración de Firebase
+import { firebaseConfig, VAPID_KEY, API_URL, validateFirebaseConfig } from './firebase-config.js';
 
 // Estado de la aplicación
 let messaging = null;
@@ -33,6 +22,12 @@ const elements = {
 // Inicialización
 document.addEventListener('DOMContentLoaded', async () => {
     log('Aplicación iniciada');
+    
+    // Validar configuración de Firebase
+    if (!validateFirebaseConfig()) {
+        updateStatus('unsupported', '❌', 'Configuración pendiente', 'Necesitas configurar tus credenciales de Firebase en firebase-config.js');
+        return;
+    }
     
     // Verificar soporte de notificaciones
     if (!('Notification' in window)) {
@@ -200,7 +195,7 @@ async function getFirebaseToken() {
         const swRegistration = await navigator.serviceWorker.ready;
         
         const token = await window.firebaseMessaging.getToken(messaging, {
-            vapidKey: 'TU_VAPID_KEY_AQUI', // Obtener de Firebase Console
+            vapidKey: VAPID_KEY,
             serviceWorkerRegistration: swRegistration
         });
 

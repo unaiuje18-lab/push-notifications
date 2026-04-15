@@ -9,6 +9,9 @@ yarn.lock
 # Credenciales de Firebase
 server/config/firebase-adminsdk.json
 server/config/*.json
+*-firebase-adminsdk-*.json
+serviceAccountKey.json
+firebase-*.json
 
 # Base de datos
 server/data/
