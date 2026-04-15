@@ -8,17 +8,12 @@
     <!-- ============================================ -->
     <!-- CONFIGURACIÓN DE ONESIGNAL -->
     <!-- ============================================ -->
-    <!-- Reemplaza "YOUR-APP-ID" con tu App ID de OneSignal -->
     <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
     <script>
         window.OneSignalDeferred = window.OneSignalDeferred || [];
         OneSignalDeferred.push(async function(OneSignal) {
             await OneSignal.init({
-                appId: "YOUR-APP-ID", // ← PEGA TU APP ID AQUÍ
-                safari_web_id: "web.onesignal.auto.xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
-                notifyButton: {
-                    enable: false, // Usaremos nuestro propio botón
-                }
+                appId: "a46b5099-4acb-4d44-b252-6a8384166c50",
             });
         });
     </script>
