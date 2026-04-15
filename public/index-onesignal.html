@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notificaciones Push</title>
+    
+    <!-- ============================================ -->
+    <!-- CONFIGURACIÓN DE ONESIGNAL -->
+    <!-- ============================================ -->
+    <!-- Reemplaza "YOUR-APP-ID" con tu App ID de OneSignal -->
+    <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+    <script>
+        window.OneSignalDeferred = window.OneSignalDeferred || [];
+        OneSignalDeferred.push(async function(OneSignal) {
+            await OneSignal.init({
+                appId: "YOUR-APP-ID", // ← PEGA TU APP ID AQUÍ
+                safari_web_id: "web.onesignal.auto.xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+                notifyButton: {
+                    enable: false, // Usaremos nuestro propio botón
+                }
+            });
+        });
+    </script>
+    <!-- ============================================ -->
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 500px;
+            width: 100%;
+            padding: 50px 40px;
+            text-align: center;
+        }
+
+        .icon {
+            font-size: 100px;
+            margin-bottom: 20px;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        h1 {
+            color: #333;
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+
+        p {
+            color: #666;
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 18px 50px;
+            font-size: 1.2rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.6);
+        }
+
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .btn-secondary {
+            background: #f44336;
+        }
+
+        .message {
+            margin-top: 25px;
+            padding: 15px;
+            border-radius: 10px;
+            display: none;
+            animation: slideIn 0.3s;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .message.success {
+            background: #d4edda;
+            color: #155724;
+            display: block;
+        }
+
+        .message.error {
+            background: #f8d7da;
+            color: #721c24;
+            display: block;
+        }
+
+        .info {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            text-align: left;
+        }
+
+        .info h3 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .info ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .info li {
+            padding: 8px 0;
+            color: #666;
+        }
+
+        .info li::before {
+            content: "✓ ";
+            color: #667eea;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="icon" id="icon">🔔</div>
+        <h1 id="title">¡Activa las Notificaciones!</h1>
+        <p id="status">Recibe actualizaciones al instante</p>
+        
+        <button class="btn" id="btn" onclick="activarNotificaciones()">
+            Activar Ahora
+        </button>
+
+        <div class="message" id="message"></div>
+
+        <div class="info">
+            <h3>💡 Beneficios</h3>
+            <ul>
+                <li>Noticias importantes al instante</li>
+                <li>Funciona con la web cerrada</li>
+                <li>Desactiva cuando quieras</li>
+                <li>Compatible con móviles</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        async function activarNotificaciones() {
+            const btn = document.getElementById('btn');
+            btn.disabled = true;
+            btn.textContent = 'Procesando...';
+
+            try {
+                // Pedir permiso de notificaciones
+                await OneSignalDeferred.push(async function(OneSignal) {
+                    await OneSignal.Slidedown.promptPush();
+                });
+
+                // Verificar si se dio permiso
+                const isPushSupported = await OneSignal.Notifications.isPushSupported();
+                const permission = await OneSignal.Notifications.permissionNative;
+
+                if (permission === 'granted') {
+                    document.getElementById('icon').textContent = '✅';
+                    document.getElementById('title').textContent = '¡Notificaciones Activas!';
+                    document.getElementById('status').textContent = 'Recibirás nuestras actualizaciones';
+                    btn.textContent = 'Ya estás suscrito ✓';
+                    btn.classList.add('btn-secondary');
+                    mostrarMensaje('¡Perfecto! Ahora recibirás notificaciones 🎉', 'success');
+                } else {
+                    mostrarMensaje('Permiso denegado. Actívalas en la configuración del navegador.', 'error');
+                    btn.textContent = 'Activar Ahora';
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                mostrarMensaje('Error: ' + error.message, 'error');
+                btn.textContent = 'Activar Ahora';
+            } finally {
+                btn.disabled = false;
+            }
+        }
+
+        function mostrarMensaje(texto, tipo) {
+            const msg = document.getElementById('message');
+            msg.textContent = texto;
+            msg.className = 'message ' + tipo;
+            setTimeout(() => msg.className = 'message', 5000);
+        }
+
+        // Verificar estado inicial
+        OneSignalDeferred.push(async function(OneSignal) {
+            const permission = await OneSignal.Notifications.permissionNative;
+            
+            if (permission === 'granted') {
+                document.getElementById('icon').textContent = '✅';
+                document.getElementById('title').textContent = '¡Notificaciones Activas!';
+                document.getElementById('status').textContent = 'Recibirás nuestras actualizaciones';
+                document.getElementById('btn').textContent = 'Ya estás suscrito ✓';
+                document.getElementById('btn').classList.add('btn-secondary');
+            } else if (permission === 'denied') {
+                document.getElementById('icon').textContent = '🚫';
+                document.getElementById('title').textContent = 'Bloqueadas';
+                document.getElementById('status').textContent = 'Desbloquéalas en la configuración';
+                document.getElementById('btn').disabled = true;
+            }
+        });
+    </script>
+</body>
+</html>
