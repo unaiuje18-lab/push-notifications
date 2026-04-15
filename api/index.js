@@ -34,31 +34,42 @@ module.exports = async (req, res) => {
         return res.status(200).end();
     }
 
-    const path = req.url.replace('/api', '');
+    // Extraer la ruta limpia
+    let path = req.url || '';
+    
+    // Remover query params
+    if (path.includes('?')) {
+        path = path.split('?')[0];
+    }
+    
+    // Normalizar la ruta
+    path = path.replace('/api', '').replace(/^\//, '');
+    
+    console.log('Request:', req.method, path);
 
     try {
         // Rutas
-        if (path === '/subscribe' && req.method === 'POST') {
+        if (path === 'subscribe' && req.method === 'POST') {
             return handleSubscribe(req, res);
         }
         
-        if (path === '/unsubscribe' && req.method === 'POST') {
+        if (path === 'unsubscribe' && req.method === 'POST') {
             return handleUnsubscribe(req, res);
         }
         
-        if (path === '/send-test' && req.method === 'POST') {
+        if (path === 'send-test' && req.method === 'POST') {
             return handleSendTest(req, res);
         }
         
-        if (path === '/send-to-all' && req.method === 'POST') {
+        if (path === 'send-to-all' && req.method === 'POST') {
             return handleSendToAll(req, res);
         }
         
-        if (path === '/subscriptions') {
+        if (path === 'subscriptions') {
             return handleGetSubscriptions(req, res);
         }
         
-        if (path === '/health') {
+        if (path === 'health' || path === '') {
             return res.json({ status: 'OK', timestamp: new Date().toISOString() });
         }
 

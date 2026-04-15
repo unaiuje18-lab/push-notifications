@@ -1,0 +1,55 @@
+═══════════════════════════════════════════════════════════════════
+📋 VARIABLES DE ENTORNO PARA VERCEL
+═══════════════════════════════════════════════════════════════════
+
+INSTRUCCIONES:
+1. Ve a: https://vercel.com/dashboard
+2. Busca tu proyecto: "push-notifications-sooty"
+3. Click en el proyecto → Settings → Environment Variables
+4. Agrega estas 3 variables (copia y pega cada valor):
+
+═══════════════════════════════════════════════════════════════════
+
+VARIABLE 1:
+-----------
+Name: FIREBASE_PROJECT_ID
+Value: push-notifications-388cc
+
+═══════════════════════════════════════════════════════════════════
+
+VARIABLE 2:
+-----------
+Name: FIREBASE_CLIENT_EMAIL
+Value: firebase-adminsdk-fbsvc@push-notifications-388cc.iam.gserviceaccount.com
+
+═══════════════════════════════════════════════════════════════════
+
+VARIABLE 3:
+-----------
+Name: FIREBASE_PRIVATE_KEY
+Value: (Abre el archivo firebase-adminsdk.json y copia TODA la línea "private_key")
+
+Ejemplo de cómo debe verse:
+"-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDEZM9w4TiIFYqT\ntHK66QRqx0aRngNxe7EFHGzlGj/e28dxvgYqXIKw5yYy8Sea4l7KfDZCIO+HjZVn\np69hzfcu/evzTV519/kigvzZQVZEJMsZhrlAnsV3xV2nBQrp33EcqdjObeFceWqm\nq+dQToFN/I8t6qaoKw02P4hW2vUNjo8rMsLVYJmRZzLF2tGfWZRDZMUYwICerq9d\nywcy3N4ILAeKKyy9ZuMCdpahnIo5x5s07LKBK7MriFvxreoEDQCC+E+r+cFeuGSv\nmQq4FesQC6FK3A2+zPwYOKZhIwncR6GOAFj+QXq6WFr5YGTPhe3D5DKNNn+WH4Lb\nmQl9jKX3AgMBAAECggEADRn8jLc5ojptqDTdgoKQ/N6WYph7+lIaGREwYohBwog+\n4eOfXawWO97vuW5FChwX3sIyjG7OC+jyEpwpIwkueEAQQYbjylLkl9zNKWEmdB1Q\nPz+xlBIDcl4ERWQcukVhslvSTtMduaGP79Z/8+eI0L8Mfi+tNoLIutm6KrEor+K4\nlHrPYjlpRzYVENzqgCh+hY6JFLGM07UCS6vZwr3KLNOGwnMe9Dm8xK6sTfOa/wxU\nY0M6fAj/FqBD2MhULp0WFKgJSH9Wvde/gju9+ZasC/ORY8nU6Za6MKLQIz90JR+g\nW4nuCLw4ujIz95hgILxrOYcc+ISNQKPtVnr/U7/V4QKBgQD/9BlO4uDFYbSZVI5T\nqXZ3PS3cCbz0zkdiElWBidHrrLm99yvWpybTkOsxN0ECzG49nHuRi1Dpph+Qhxjr\nLEqb/3h2b/mQoaPSQ1PIkylxf8Ou3pWO2xBoXOvD0XutDksAJ0bPxpLd4QLDk0zq\nvsl1YI24rRLPClyUUq9Opwb07QKBgQDEbfEs6zEpK8De1TGYIUa7tC0nK+cd5HBR\ntH9GgQSRtNFncDkbGjEDH13mbtAdK8694gI9z/EW1cit1/OQHqcuxpiP5JnhvO9A\nkJ4/uWFA9qghxcrJo5UB2eyTglPIRttI6nSVeZlyjFbeutfEe0X1WKk+K+/S5/lj\ngLIdSGat8wKBgQCR7KURKKBlaBMC6AZNBGyaBrNCo/qqx4BDFZjSRbT83Hj5KRZB\nRwMH07ODV7Ek21Bup+x7SiZTT3bne15lldbjoX8YZzatkrpHgkMeM2iJYQI7jINP\n8u0j0vZHqgMM4v03lSz2AIxzG3nr7usHWsaYuPeTtnjmuU2W8p0oBmoc8QKBgQCm\ndpFjQrF3tYeOj9eml9Ssr4VwY8lJ0NTKuQ7/PckUfcrUQQt0B18vyT43UQN3JS/g\nRQ8nOPiUJHobsR3Mrd16S3zwvIcYAZgz/BrP4BcmCaH0dP1kogdd+UN+wnykBkBB\na8d/APzkUUAxIuBFtz5TLF7IvE1SS5pSE7deD4RMtwKBgCeKkShXVscJPL0WcmYL\njrDACyhkQbl2EOIS2TC7KKSqxUXxJJORC85SKf1fUWZTOJ1dXZDmzab2tkSfmhX9\n4jQMvP1NCzsWh5oopwrqbdfITeb5Xr1SAGgcfPQGbecJBUObnSDIjopEblnOoX8p\nj1NPkQtDC7L5cdCD4Y3Ac1qn\n-----END PRIVATE KEY-----\n"
+
+IMPORTANTE: Copia TODO incluyendo las comillas al inicio y al final, y los \n
+
+═══════════════════════════════════════════════════════════════════
+
+DESPUÉS DE AGREGAR LAS VARIABLES:
+
+1. Vercel redesplegará automáticamente (1-2 minutos)
+2. Abre: https://push-notifications-sooty.vercel.app/
+3. Click en "Activar notificaciones"
+4. Envía notificación de prueba
+5. ¡Deberías recibirla! 🎉
+
+═══════════════════════════════════════════════════════════════════
+
+🔗 LINKS ÚTILES:
+
+Dashboard de Vercel: https://vercel.com/dashboard
+Tu proyecto: https://push-notifications-sooty.vercel.app/
+Environment Variables: Ve a tu proyecto → Settings → Environment Variables
+
+═══════════════════════════════════════════════════════════════════

@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Variables para Vercel</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 900px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #000;
+            text-align: center;
+        }
+        .step {
+            background: #e3f2fd;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+            border-left: 4px solid #2196F3;
+        }
+        .variable {
+            background: #f9f9f9;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 5px;
+            border: 2px solid #4CAF50;
+        }
+        .variable h3 {
+            margin-top: 0;
+            color: #4CAF50;
+        }
+        .var-name {
+            background: #e8f5e9;
+            padding: 10px;
+            margin: 10px 0;
+            font-family: monospace;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        .var-value {
+            background: #fff;
+            padding: 10px;
+            margin: 10px 0;
+            font-family: monospace;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            word-break: break-all;
+            cursor: pointer;
+            position: relative;
+        }
+        .copy-btn {
+            background: #2196F3;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+        .copy-btn:hover {
+            background: #1976D2;
+        }
+        .copied {
+            background: #4CAF50 !important;
+        }
+        .warning {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        .link {
+            display: inline-block;
+            background: #2196F3;
+            color: white;
+            padding: 15px 30px;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 10px 0;
+            font-size: 16px;
+        }
+        .link:hover {
+            background: #1976D2;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔑 Variables para Vercel</h1>
+        
+        <div class="step">
+            <h3>📍 Dónde pegarlas:</h3>
+            <ol>
+                <li>Abre: <a href="https://vercel.com/dashboard" target="_blank" class="link">Vercel Dashboard</a></li>
+                <li>Busca tu proyecto: <strong>"push-notifications-sooty"</strong></li>
+                <li>Click en el proyecto</li>
+                <li>Click en <strong>"Settings"</strong> (arriba)</li>
+                <li>Click en <strong>"Environment Variables"</strong> (menú izquierdo)</li>
+                <li>Click en <strong>"Add New"</strong></li>
+                <li>Copia y pega cada variable de abajo</li>
+            </ol>
+        </div>
+
+        <!-- Variable 1 -->
+        <div class="variable">
+            <h3>✅ Variable 1</h3>
+            <strong>Name:</strong>
+            <div class="var-name" id="name1">FIREBASE_PROJECT_ID</div>
+            <button class="copy-btn" onclick="copyText('name1')">📋 Copiar Name</button>
+            
+            <strong>Value:</strong>
+            <div class="var-value" id="value1">push-notifications-388cc</div>
+            <button class="copy-btn" onclick="copyText('value1')">📋 Copiar Value</button>
+        </div>
+
+        <!-- Variable 2 -->
+        <div class="variable">
+            <h3>✅ Variable 2</h3>
+            <strong>Name:</strong>
+            <div class="var-name" id="name2">FIREBASE_CLIENT_EMAIL</div>
+            <button class="copy-btn" onclick="copyText('name2')">📋 Copiar Name</button>
+            
+            <strong>Value:</strong>
+            <div class="var-value" id="value2">firebase-adminsdk-fbsvc@push-notifications-388cc.iam.gserviceaccount.com</div>
+            <button class="copy-btn" onclick="copyText('value2')">📋 Copiar Value</button>
+        </div>
+
+        <!-- Variable 3 -->
+        <div class="variable">
+            <h3>⚠️ Variable 3 (IMPORTANTE)</h3>
+            <strong>Name:</strong>
+            <div class="var-name" id="name3">FIREBASE_PRIVATE_KEY</div>
+            <button class="copy-btn" onclick="copyText('name3')">📋 Copiar Name</button>
+            
+            <div class="warning">
+                <strong>⚠️ Para el Value:</strong>
+                <ol>
+                    <li>Abre el archivo <code>firebase-adminsdk.json</code></li>
+                    <li>Busca la línea que dice <code>"private_key":</code></li>
+                    <li>Copia TODO el valor (desde <code>"-----BEGIN</code> hasta <code>-----\n"</code>)</li>
+                    <li>Pégalo en Vercel</li>
+                </ol>
+                <button class="copy-btn" onclick="openFile()">📂 Abrir firebase-adminsdk.json</button>
+            </div>
+        </div>
+
+        <div class="step">
+            <h3>✅ Después de agregar las 3 variables:</h3>
+            <ol>
+                <li>Vercel te preguntará si quieres hacer <strong>Redeploy</strong></li>
+                <li>Click en <strong>"Redeploy"</strong></li>
+                <li>Espera 1-2 minutos</li>
+                <li>Abre: <a href="https://push-notifications-sooty.vercel.app/" target="_blank">https://push-notifications-sooty.vercel.app/</a></li>
+                <li>¡Prueba las notificaciones! 🎉</li>
+            </ol>
+        </div>
+
+        <center>
+            <a href="https://vercel.com/dashboard" target="_blank" class="link">🚀 Ir a Vercel Dashboard</a>
+        </center>
+    </div>
+
+    <script>
+        function copyText(elementId) {
+            const element = document.getElementById(elementId);
+            const text = element.textContent;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                const btn = element.nextElementSibling;
+                btn.textContent = '✅ Copiado!';
+                btn.classList.add('copied');
+                
+                setTimeout(() => {
+                    btn.textContent = '📋 Copiar ' + (elementId.includes('name') ? 'Name' : 'Value');
+                    btn.classList.remove('copied');
+                }, 2000);
+            });
+        }
+
+        function openFile() {
+            alert('El archivo firebase-adminsdk.json debería abrirse automáticamente.\n\nSi no se abre, búscalo en la carpeta del proyecto y ábrelo con Notepad.');
+        }
+    </script>
+</body>
+</html>
