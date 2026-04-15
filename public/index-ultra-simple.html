@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notificaciones Push</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 500px;
+            width: 100%;
+            padding: 50px 40px;
+            text-align: center;
+        }
+
+        .icon {
+            font-size: 100px;
+            margin-bottom: 20px;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        h1 {
+            color: #333;
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+
+        p {
+            color: #666;
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 18px 50px;
+            font-size: 1.2rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.6);
+        }
+
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .message {
+            margin-top: 25px;
+            padding: 15px;
+            border-radius: 10px;
+            display: none;
+            animation: slideIn 0.3s;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .message.success {
+            background: #d4edda;
+            color: #155724;
+            display: block;
+        }
+
+        .message.error {
+            background: #f8d7da;
+            color: #721c24;
+            display: block;
+        }
+
+        .info {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            text-align: left;
+        }
+
+        .info h3 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .info ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .info li {
+            padding: 8px 0;
+            color: #666;
+        }
+
+        .info li::before {
+            content: "✓ ";
+            color: #667eea;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="icon" id="icon">🔔</div>
+        <h1 id="title">¡Activa las Notificaciones!</h1>
+        <p id="status">Recibe actualizaciones al instante</p>
+        
+        <button class="btn" id="btn" onclick="activarNotificaciones()">
+            Activar Ahora
+        </button>
+
+        <div class="message" id="message"></div>
+
+        <div class="info">
+            <h3>💡 Beneficios</h3>
+            <ul>
+                <li>Noticias importantes al instante</li>
+                <li>Funciona con la web cerrada</li>
+                <li>Desactiva cuando quieras</li>
+                <li>Compatible con móviles</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        let subscription = null;
+
+        // Verificar soporte
+        if (!('Notification' in window)) {
+            mostrarMensaje('Tu navegador no soporta notificaciones 😞', 'error');
+            document.getElementById('btn').disabled = true;
+        } else if (!('serviceWorker' in navigator)) {
+            mostrarMensaje('Tu navegador no soporta Service Workers 😞', 'error');
+            document.getElementById('btn').disabled = true;
+        } else {
+            // Registrar Service Worker
+            navigator.serviceWorker.register('/sw-ultra-simple.js')
+                .then(() => verificarEstado())
+                .catch(err => {
+                    console.error('Error:', err);
+                    mostrarMensaje('Error al inicializar 😞', 'error');
+                });
+        }
+
+        // Verificar estado actual
+        function verificarEstado() {
+            if (Notification.permission === 'granted') {
+                document.getElementById('icon').textContent = '✅';
+                document.getElementById('title').textContent = '¡Notificaciones Activas!';
+                document.getElementById('status').textContent = 'Recibirás nuestras actualizaciones';
+                document.getElementById('btn').textContent = 'Desactivar';
+                document.getElementById('btn').style.background = '#f44336';
+            } else if (Notification.permission === 'denied') {
+                document.getElementById('icon').textContent = '🚫';
+                document.getElementById('title').textContent = 'Bloqueadas';
+                document.getElementById('status').textContent = 'Desbloquéalas en la configuración';
+                document.getElementById('btn').disabled = true;
+            }
+        }
+
+        // Activar notificaciones
+        async function activarNotificaciones() {
+            const btn = document.getElementById('btn');
+            
+            if (Notification.permission === 'granted') {
+                // Desactivar
+                localStorage.removeItem('push_subscription');
+                location.reload();
+                return;
+            }
+
+            btn.disabled = true;
+            btn.textContent = 'Procesando...';
+
+            try {
+                const permission = await Notification.requestPermission();
+                
+                if (permission === 'granted') {
+                    // Obtener suscripción
+                    const registration = await navigator.serviceWorker.ready;
+                    
+                    // NOTA: En producción real necesitarías claves VAPID del servidor
+                    // Por ahora solo guardamos que el usuario aceptó
+                    const sub = await registration.pushManager.subscribe({
+                        userVisibleOnly: true,
+                        applicationServerKey: urlBase64ToUint8Array(
+                            'BEl62iUYgUivxIkv69yViEuiBIa-Ib37J8xQmrHP0kGTt0YE8cOuZVCMGzJ9J7o6MNnCZpUkVqCNtJfJlRVtDrY'
+                        )
+                    });
+
+                    // Guardar suscripción localmente
+                    localStorage.setItem('push_subscription', JSON.stringify(sub.toJSON()));
+                    
+                    console.log('Suscripción:', sub.toJSON());
+                    
+                    // Actualizar UI
+                    verificarEstado();
+                    mostrarMensaje('¡Listo! Ahora recibirás notificaciones 🎉', 'success');
+                    
+                    // Enviar notificación de prueba
+                    new Notification('¡Bienvenido! 🎉', {
+                        body: 'Has activado las notificaciones correctamente',
+                        icon: '🔔'
+                    });
+                } else {
+                    mostrarMensaje('Permiso denegado 😞', 'error');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                mostrarMensaje('Error: ' + error.message, 'error');
+            } finally {
+                btn.disabled = false;
+                if (Notification.permission !== 'granted') {
+                    btn.textContent = 'Activar Ahora';
+                }
+            }
+        }
+
+        function mostrarMensaje(texto, tipo) {
+            const msg = document.getElementById('message');
+            msg.textContent = texto;
+            msg.className = 'message ' + tipo;
+            setTimeout(() => msg.className = 'message', 5000);
+        }
+
+        // Convertir VAPID key
+        function urlBase64ToUint8Array(base64String) {
+            const padding = '='.repeat((4 - base64String.length % 4) % 4);
+            const base64 = (base64String + padding).replace(/\-/g, '+').replace(/_/g, '/');
+            const rawData = window.atob(base64);
+            const outputArray = new Uint8Array(rawData.length);
+            for (let i = 0; i < rawData.length; ++i) {
+                outputArray[i] = rawData.charCodeAt(i);
+            }
+            return outputArray;
+        }
+    </script>
+</body>
+</html>
