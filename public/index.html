@@ -36,10 +36,6 @@
                     <span class="btn-icon">🔕</span>
                     Desactivar notificaciones
                 </button>
-                <button id="testNotification" class="btn btn-test" style="display: none;">
-                    <span class="btn-icon">🧪</span>
-                    Enviar notificación de prueba
-                </button>
             </div>
 
             <!-- Información adicional -->
@@ -47,33 +43,10 @@
                 <h3>¿Por qué activar notificaciones?</h3>
                 <ul class="benefits-list">
                     <li>📢 Recibe actualizaciones importantes al instante</li>
-                    <li>🎯 Notificaciones personalizadas según tus preferencias</li>
+                    <li>🎯 Notificaciones personalizadas</li>
                     <li>🔒 Control total: puedes desactivarlas cuando quieras</li>
                     <li>💡 Funciona incluso con la web cerrada</li>
                 </ul>
-            </div>
-
-            <!-- Sección de demostración (solo visible para admins) -->
-            <div id="adminPanel" class="admin-panel" style="display: none;">
-                <h3>Panel de Administración</h3>
-                <div class="admin-form">
-                    <label for="notifTitle">Título:</label>
-                    <input type="text" id="notifTitle" placeholder="Título de la notificación">
-                    
-                    <label for="notifBody">Mensaje:</label>
-                    <textarea id="notifBody" placeholder="Contenido de la notificación" rows="3"></textarea>
-                    
-                    <label for="notifUrl">URL (opcional):</label>
-                    <input type="text" id="notifUrl" placeholder="https://ejemplo.com/destino">
-                    
-                    <button id="sendToAll" class="btn btn-admin">Enviar a todos los usuarios</button>
-                </div>
-            </div>
-
-            <!-- Log de eventos (útil para desarrollo) -->
-            <div class="debug-section" id="debugSection" style="display: none;">
-                <h4>Log de eventos</h4>
-                <div id="debugLog" class="debug-log"></div>
             </div>
         </main>
 

@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notificaciones Push</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 500px;
+            width: 100%;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+            transition: transform 0.3s;
+        }
+
+        .icon.active {
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        h1 {
+            color: #333;
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .status {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1rem;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 16px 40px;
+            font-size: 1.1rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            font-weight: 600;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        .btn-secondary {
+            background: #f44336;
+        }
+
+        .benefits {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 25px;
+            margin-top: 30px;
+            text-align: left;
+        }
+
+        .benefits h3 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+
+        .benefits ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .benefits li {
+            padding: 8px 0;
+            color: #666;
+        }
+
+        .message {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .message.success {
+            background: #d4edda;
+            color: #155724;
+            display: block;
+        }
+
+        .message.error {
+            background: #f8d7da;
+            color: #721c24;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="icon" id="icon">🔕</div>
+        <h1 id="title">Activa las Notificaciones</h1>
+        <p class="status" id="status">Mantente al día con nuestras actualizaciones</p>
+        
+        <button class="btn" id="actionBtn" onclick="toggleNotifications()">
+            Activar Notificaciones
+        </button>
+
+        <div class="message" id="message"></div>
+
+        <div class="benefits">
+            <h3>✨ Beneficios</h3>
+            <ul>
+                <li>📢 Actualizaciones importantes al instante</li>
+                <li>🎯 Contenido personalizado</li>
+                <li>🔒 Desactiva cuando quieras</li>
+                <li>💡 Funciona con la web cerrada</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-messaging-compat.js"></script>
+
+    <script>
+        // ============================================
+        // CONFIGURACIÓN DE FIREBASE
+        // ============================================
+        // 🔥 IMPORTANTE: Reemplaza estos valores con los de TU proyecto Firebase
+        const firebaseConfig = {
+            apiKey: "TU_API_KEY_AQUI",
+            authDomain: "tu-proyecto.firebaseapp.com",
+            projectId: "tu-proyecto-id",
+            storageBucket: "tu-proyecto.appspot.com",
+            messagingSenderId: "123456789",
+            appId: "1:123456789:web:abcdef123456"
+        };
+
+        // 🔑 VAPID Key de Firebase Cloud Messaging
+        const VAPID_KEY = "TU_VAPID_KEY_AQUI";
+
+        // ============================================
+        // CÓDIGO DE LA APLICACIÓN
+        // ============================================
+        let messaging = null;
+        let isNotificationEnabled = false;
+
+        // Inicializar Firebase
+        firebase.initializeApp(firebaseConfig);
+
+        // Verificar soporte
+        if (!('Notification' in window)) {
+            showMessage('Tu navegador no soporta notificaciones', 'error');
+            document.getElementById('actionBtn').disabled = true;
+        } else if (!('serviceWorker' in navigator)) {
+            showMessage('Tu navegador no soporta Service Workers', 'error');
+            document.getElementById('actionBtn').disabled = true;
+        } else {
+            // Registrar Service Worker
+            navigator.serviceWorker.register('/sw-simple.js')
+                .then(() => {
+                    messaging = firebase.messaging();
+                    checkNotificationStatus();
+                })
+                .catch(err => {
+                    console.error('Error al registrar Service Worker:', err);
+                    showMessage('Error al inicializar notificaciones', 'error');
+                });
+        }
+
+        // Verificar estado actual
+        function checkNotificationStatus() {
+            const permission = Notification.permission;
+            
+            if (permission === 'granted') {
+                setNotificationEnabled(true);
+            } else if (permission === 'denied') {
+                document.getElementById('icon').textContent = '🚫';
+                document.getElementById('title').textContent = 'Notificaciones Bloqueadas';
+                document.getElementById('status').textContent = 'Desbloquéalas en la configuración del navegador';
+                document.getElementById('actionBtn').disabled = true;
+            }
+        }
+
+        // Activar/Desactivar notificaciones
+        async function toggleNotifications() {
+            const btn = document.getElementById('actionBtn');
+            btn.disabled = true;
+
+            if (!isNotificationEnabled) {
+                // Activar notificaciones
+                try {
+                    const permission = await Notification.requestPermission();
+                    
+                    if (permission === 'granted') {
+                        // Obtener token
+                        const token = await messaging.getToken({ vapidKey: VAPID_KEY });
+                        
+                        // Guardar token (aquí podrías enviarlo a tu servidor)
+                        localStorage.setItem('fcm_token', token);
+                        console.log('Token FCM:', token);
+                        
+                        setNotificationEnabled(true);
+                        showMessage('¡Notificaciones activadas correctamente! ✅', 'success');
+                        
+                        // Enviar notificación de prueba
+                        new Notification('¡Bienvenido! 🎉', {
+                            body: 'Has activado las notificaciones correctamente',
+                            icon: '/icon.png'
+                        });
+                    } else {
+                        showMessage('Permiso denegado. Actívalas en la configuración del navegador.', 'error');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    showMessage('Error al activar notificaciones: ' + error.message, 'error');
+                }
+            } else {
+                // Desactivar notificaciones
+                localStorage.removeItem('fcm_token');
+                setNotificationEnabled(false);
+                showMessage('Notificaciones desactivadas', 'success');
+            }
+            
+            btn.disabled = false;
+        }
+
+        // Actualizar UI
+        function setNotificationEnabled(enabled) {
+            isNotificationEnabled = enabled;
+            const icon = document.getElementById('icon');
+            const title = document.getElementById('title');
+            const status = document.getElementById('status');
+            const btn = document.getElementById('actionBtn');
+
+            if (enabled) {
+                icon.textContent = '✅';
+                icon.classList.add('active');
+                title.textContent = '¡Notificaciones Activas!';
+                status.textContent = 'Recibirás nuestras actualizaciones';
+                btn.textContent = 'Desactivar Notificaciones';
+                btn.classList.add('btn-secondary');
+            } else {
+                icon.textContent = '🔕';
+                icon.classList.remove('active');
+                title.textContent = 'Activa las Notificaciones';
+                status.textContent = 'Mantente al día con nuestras actualizaciones';
+                btn.textContent = 'Activar Notificaciones';
+                btn.classList.remove('btn-secondary');
+            }
+        }
+
+        // Mostrar mensajes
+        function showMessage(text, type) {
+            const message = document.getElementById('message');
+            message.textContent = text;
+            message.className = 'message ' + type;
+            
+            setTimeout(() => {
+                message.className = 'message';
+            }, 5000);
+        }
+
+        // Escuchar mensajes en primer plano
+        if (messaging) {
+            messaging.onMessage((payload) => {
+                console.log('Mensaje recibido:', payload);
+                
+                new Notification(payload.notification.title, {
+                    body: payload.notification.body,
+                    icon: payload.notification.icon || '/icon.png'
+                });
+            });
+        }
+    </script>
+</body>
+</html>
