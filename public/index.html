@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Notificaciones Push</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="manifest" href="manifest.json">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🔔 Notificaciones Push Web</h1>
+            <p class="subtitle">Mantente informado con nuestras actualizaciones en tiempo real</p>
+        </header>
+
+        <main>
+            <!-- Sección de estado de notificaciones -->
+            <div class="notification-status" id="notificationStatus">
+                <div class="status-card">
+                    <div class="status-icon" id="statusIcon">🔕</div>
+                    <div class="status-info">
+                        <h2 id="statusTitle">Notificaciones desactivadas</h2>
+                        <p id="statusMessage">Activa las notificaciones para recibir actualizaciones importantes</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Botón de activación -->
+            <div class="action-section">
+                <button id="enableNotifications" class="btn btn-primary" style="display: none;">
+                    <span class="btn-icon">🔔</span>
+                    Activar notificaciones
+                </button>
+                <button id="disableNotifications" class="btn btn-secondary" style="display: none;">
+                    <span class="btn-icon">🔕</span>
+                    Desactivar notificaciones
+                </button>
+                <button id="testNotification" class="btn btn-test" style="display: none;">
+                    <span class="btn-icon">🧪</span>
+                    Enviar notificación de prueba
+                </button>
+            </div>
+
+            <!-- Información adicional -->
+            <div class="info-section">
+                <h3>¿Por qué activar notificaciones?</h3>
+                <ul class="benefits-list">
+                    <li>📢 Recibe actualizaciones importantes al instante</li>
+                    <li>🎯 Notificaciones personalizadas según tus preferencias</li>
+                    <li>🔒 Control total: puedes desactivarlas cuando quieras</li>
+                    <li>💡 Funciona incluso con la web cerrada</li>
+                </ul>
+            </div>
+
+            <!-- Sección de demostración (solo visible para admins) -->
+            <div id="adminPanel" class="admin-panel" style="display: none;">
+                <h3>Panel de Administración</h3>
+                <div class="admin-form">
+                    <label for="notifTitle">Título:</label>
+                    <input type="text" id="notifTitle" placeholder="Título de la notificación">
+                    
+                    <label for="notifBody">Mensaje:</label>
+                    <textarea id="notifBody" placeholder="Contenido de la notificación" rows="3"></textarea>
+                    
+                    <label for="notifUrl">URL (opcional):</label>
+                    <input type="text" id="notifUrl" placeholder="https://ejemplo.com/destino">
+                    
+                    <button id="sendToAll" class="btn btn-admin">Enviar a todos los usuarios</button>
+                </div>
+            </div>
+
+            <!-- Log de eventos (útil para desarrollo) -->
+            <div class="debug-section" id="debugSection" style="display: none;">
+                <h4>Log de eventos</h4>
+                <div id="debugLog" class="debug-log"></div>
+            </div>
+        </main>
+
+        <footer>
+            <p>Sistema de notificaciones push con Firebase Cloud Messaging</p>
+        </footer>
+    </div>
+
+    <!-- Scripts -->
+    <script type="module" src="app.js"></script>
+</body>
+</html>
