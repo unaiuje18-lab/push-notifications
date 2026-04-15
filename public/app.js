@@ -1,5 +1,7 @@
 // Importar configuración de Firebase
 import { firebaseConfig, VAPID_KEY, API_URL, validateFirebaseConfig } from './firebase-config.js';
+// Importar configuración de OneSignal
+import { ONESIGNAL_CONFIG, initializeOneSignal, subscribeOneSignal } from './onesignal-config.js';
 
 // Estado de la aplicación
 let messaging = null;
@@ -51,6 +53,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Inicializar Firebase
     initializeFirebase();
+    
+    // Inicializar OneSignal
+    await initializeOneSignal();
+    log('OneSignal inicializado');
 
     // Verificar estado actual
     checkNotificationPermission();
@@ -175,7 +181,15 @@ async function requestNotificationPermission() {
         log(`Permiso otorgado: ${permission}`);
 
         if (permission === 'granted') {
+            // Suscribir a Firebase
             await getFirebaseToken();
+            
+            // Suscribir a OneSignal también
+            const oneSignalResult = await subscribeOneSignal();
+            if (oneSignalResult.success) {
+                log('Suscrito a OneSignal: ' + oneSignalResult.playerId);
+            }
+            
             checkNotificationPermission();
         } else {
             checkNotificationPermission();
