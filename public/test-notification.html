@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Notificación Local</title>
+</head>
+<body>
+    <h1>🔔 Test Notificación Local</h1>
+    <button onclick="testLocalNotification()">Probar Notificación Local del Navegador</button>
+    <div id="status"></div>
+
+    <script>
+        function testLocalNotification() {
+            const statusDiv = document.getElementById('status');
+            
+            // Verificar si las notificaciones están soportadas
+            if (!("Notification" in window)) {
+                statusDiv.innerHTML = '<p style="color: red;">Este navegador no soporta notificaciones</p>';
+                return;
+            }
+
+            // Verificar el permiso actual
+            statusDiv.innerHTML = '<p>Permiso actual: ' + Notification.permission + '</p>';
+
+            if (Notification.permission === "granted") {
+                // Si ya tenemos permiso, mostrar notificación
+                new Notification("¡Funciona!", {
+                    body: "Si ves esto, las notificaciones del navegador funcionan correctamente",
+                    icon: "https://onesignal.com/images/notification-icons/default-icon.png"
+                });
+                statusDiv.innerHTML += '<p style="color: green;">✅ Notificación enviada</p>';
+            } else if (Notification.permission !== "denied") {
+                // Si no está denegado, pedir permiso
+                Notification.requestPermission().then(function(permission) {
+                    if (permission === "granted") {
+                        new Notification("¡Permiso concedido!", {
+                            body: "Ahora las notificaciones funcionarán",
+                            icon: "https://onesignal.com/images/notification-icons/default-icon.png"
+                        });
+                        statusDiv.innerHTML += '<p style="color: green;">✅ Permiso concedido y notificación enviada</p>';
+                    } else {
+                        statusDiv.innerHTML += '<p style="color: red;">❌ Permiso denegado</p>';
+                    }
+                });
+            } else {
+                statusDiv.innerHTML += '<p style="color: red;">❌ Las notificaciones están bloqueadas. Debes habilitarlas manualmente en la configuración del sitio.</p>';
+            }
+        }
+    </script>
+</body>
+</html>
