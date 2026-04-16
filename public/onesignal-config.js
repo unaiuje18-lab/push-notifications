@@ -82,37 +82,33 @@ async function loadOneSignalSDK() {
  * Suscribir a OneSignal
  */
 export async function subscribeOneSignal() {
-    try {
+    return new Promise((resolve) => {
         if (!window.OneSignal) {
             console.error('OneSignal no está inicializado');
-            return false;
+            resolve({ success: false, error: 'OneSignal no inicializado' });
+            return;
         }
 
-        const isPushSupported = window.OneSignal.isPushNotificationsSupported();
-        if (!isPushSupported) {
-            console.warn('Push notifications no soportadas en este navegador');
-            return false;
-        }
-
-        // Solicitar permiso
-        await window.OneSignal.showNativePrompt();
-        
-        // Verificar si está suscrito
-        const isSubscribed = await window.OneSignal.isPushNotificationsEnabled();
-        
-        if (isSubscribed) {
-            // Obtener Player ID (user ID de OneSignal)
-            const playerId = await window.OneSignal.getUserId();
-            console.log('✅ Suscrito a OneSignal. Player ID:', playerId);
-            return { success: true, playerId };
-        }
-
-        return { success: false, error: 'Usuario no aceptó permisos' };
-        
-    } catch (error) {
-        console.error('Error al suscribir a OneSignal:', error);
-        return { success: false, error: error.message };
-    }
+        window.OneSignal.push(async function() {
+            try {
+                console.log('Iniciando suscripción a OneSignal...');
+                
+                // Registrar el prompt
+                await window.OneSignal.registerForPushNotifications();
+                
+                // Esperar a obtener el Player ID
+                window.OneSignal.getUserId(function(playerId) {
+                    console.log('✅ Suscrito a OneSignal exitosamente!');
+                    console.log('Player ID:', playerId);
+                    resolve({ success: true, playerId });
+                });
+                
+            } catch (error) {
+                console.error('Error al suscribir a OneSignal:', error);
+                resolve({ success: false, error: error.message });
+            }
+        });
+    });
 }
 
 /**
