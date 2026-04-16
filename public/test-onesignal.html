@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test OneSignal</title>
+    <script src="https://cdn.onesignal.com/sdks/OneSignalSDK.js" defer></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+        button {
+            padding: 15px 30px;
+            font-size: 16px;
+            margin: 10px;
+            cursor: pointer;
+        }
+        #status {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f0f0f0;
+            border-radius: 5px;
+        }
+        .success { color: green; }
+        .error { color: red; }
+    </style>
+</head>
+<body>
+    <h1>🧪 Test OneSignal Simple</h1>
+    
+    <button onclick="initOneSignal()">1. Inicializar OneSignal</button>
+    <button onclick="subscribir()">2. Suscribirse</button>
+    <button onclick="verificarEstado()">3. Verificar Estado</button>
+    
+    <div id="status"></div>
+
+    <script>
+        const APP_ID = 'a46b5099-4acb-4d44-b252-6a8384166c50';
+        
+        function log(message, isError = false) {
+            const statusDiv = document.getElementById('status');
+            const p = document.createElement('p');
+            p.className = isError ? 'error' : 'success';
+            p.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            statusDiv.appendChild(p);
+            console.log(message);
+        }
+
+        function initOneSignal() {
+            log('Inicializando OneSignal...');
+            
+            window.OneSignal = window.OneSignal || [];
+            
+            OneSignal.push(function() {
+                OneSignal.init({
+                    appId: APP_ID,
+                    allowLocalhostAsSecureOrigin: true,
+                    notifyButton: {
+                        enable: false
+                    }
+                });
+                
+                log('✅ OneSignal inicializado correctamente');
+                
+                OneSignal.on('subscriptionChange', function(isSubscribed) {
+                    log('Cambio de suscripción: ' + isSubscribed);
+                });
+            });
+        }
+
+        function subscribir() {
+            log('Solicitando permiso...');
+            
+            OneSignal.push(function() {
+                OneSignal.registerForPushNotifications()
+                    .then(function() {
+                        log('✅ Permiso concedido');
+                        
+                        OneSignal.getUserId(function(playerId) {
+                            if (playerId) {
+                                log('✅ SUSCRITO! Player ID: ' + playerId);
+                            } else {
+                                log('❌ No se obtuvo Player ID', true);
+                            }
+                        });
+                    })
+                    .catch(function(error) {
+                        log('❌ Error: ' + error, true);
+                    });
+            });
+        }
+
+        function verificarEstado() {
+            OneSignal.push(function() {
+                OneSignal.isPushNotificationsEnabled(function(isEnabled) {
+                    if (isEnabled) {
+                        OneSignal.getUserId(function(playerId) {
+                            log('✅ ESTÁS SUSCRITO');
+                            log('Player ID: ' + playerId);
+                        });
+                    } else {
+                        log('❌ NO estás suscrito', true);
+                    }
+                });
+            });
+        }
+
+        // Auto-inicializar al cargar la página
+        window.addEventListener('load', function() {
+            log('Página cargada. Click en "1. Inicializar OneSignal"');
+        });
+    </script>
+</body>
+</html>
