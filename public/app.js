@@ -147,15 +147,10 @@ function checkNotificationPermission() {
 
     switch (permission) {
         case 'granted':
-            updateStatus('active', '✅', 'Notificaciones activadas', 'Recibirás notificaciones importantes');
+            updateStatus('active', '✅', 'Notificaciones activadas', 'Recibirás notificaciones desde OneSignal');
             elements.enableBtn.style.display = 'none';
             elements.disableBtn.style.display = 'inline-flex';
-            elements.testBtn.style.display = 'inline-flex';
-            
-            // Obtener token si no lo tenemos
-            if (!currentToken) {
-                getFirebaseToken();
-            }
+            elements.testBtn.style.display = 'none'; // Ocultar botón de prueba ya que no usamos Firebase
             break;
 
         case 'denied':
