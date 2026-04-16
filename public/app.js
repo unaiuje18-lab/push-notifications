@@ -49,10 +49,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     await registerServiceWorker();
 
     // Cargar Firebase SDK dinámicamente
-    await loadFirebaseSDK();
+    // await loadFirebaseSDK();
 
     // Inicializar Firebase
-    initializeFirebase();
+    // initializeFirebase();
+    log('Firebase desactivado temporalmente - usando solo OneSignal');
     
     // Inicializar OneSignal
     await initializeOneSignal();
@@ -181,13 +182,15 @@ async function requestNotificationPermission() {
         log(`Permiso otorgado: ${permission}`);
 
         if (permission === 'granted') {
-            // Suscribir a Firebase
-            await getFirebaseToken();
-            
-            // Suscribir a OneSignal también
+            // Suscribir solo a OneSignal
             const oneSignalResult = await subscribeOneSignal();
-            if (oneSignalResult.success) {
-                log('Suscrito a OneSignal: ' + oneSignalResult.playerId);
+            if (oneSignalResult && oneSignalResult.success) {
+                log('✅ Suscrito a OneSignal exitosamente!');
+                log('Player ID: ' + oneSignalResult.playerId);
+                updateStatus('active', '✅', 'Notificaciones activadas', 'Recibirás notificaciones desde OneSignal');
+            } else {
+                log('❌ Error al suscribir a OneSignal');
+                updateStatus('denied', '🚫', 'Error', 'No se pudo completar la suscripción');
             }
             
             checkNotificationPermission();
